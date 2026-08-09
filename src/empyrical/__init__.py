@@ -14,6 +14,18 @@
 # limitations under the License.
 # flake8: noqa
 
+"""
+.. include:: ../../README.md
+"""
+
+from . import stats
+from . import perf_attrib
+from . import periods
+from . import utils
+from . import deprecate
+
+__all__ = ["stats", "perf_attrib", "periods", "utils", "deprecate"]
+
 try:
     from ._version import version as __version__
     from ._version import version_tuple

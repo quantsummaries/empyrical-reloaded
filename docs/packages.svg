@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="488pt" height="188pt" viewBox="0.00 0.00 488.00 188.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>packages</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-184 483.64,-184 483.64,4 -4,4"/>
+<!-- empyrical -->
+<g id="node1" class="node">
+<title>empyrical</title>
+<polygon fill="none" stroke="black" points="291.83,-36 219.86,-36 219.86,0 291.83,0 291.83,-36"/>
+<text xml:space="preserve" text-anchor="start" x="227.86" y="-13.8" font-family="Times,serif" font-size="14.00">empyrical</text>
+</g>
+<!-- empyrical._version -->
+<g id="node2" class="node">
+<title>empyrical._version</title>
+<polygon fill="none" stroke="black" points="123.69,-108 0,-108 0,-72 123.69,-72 123.69,-108"/>
+<text xml:space="preserve" text-anchor="start" x="8" y="-85.8" font-family="Times,serif" font-size="14.00">empyrical._version</text>
+</g>
+<!-- empyrical&#45;&gt;empyrical._version -->
+<g id="edge1" class="edge">
+<title>empyrical-&gt;empyrical._version</title>
+<path fill="none" stroke="black" d="M219.81,-32C191.92,-42.06 152.74,-56.2 120.37,-67.88"/>
+<polygon fill="black" stroke="black" points="111.27,-71.16 119.15,-63.54 114.83,-69.88 120.68,-67.77 120.68,-67.77 120.68,-67.77 114.83,-69.88 122.21,-72 111.27,-71.16"/>
+</g>
+<!-- empyrical.perf_attrib -->
+<g id="node4" class="node">
+<title>empyrical.perf_attrib</title>
+<polygon fill="none" stroke="black" points="276.12,-108 141.57,-108 141.57,-72 276.12,-72 276.12,-108"/>
+<text xml:space="preserve" text-anchor="start" x="149.57" y="-85.8" font-family="Times,serif" font-size="14.00">empyrical.perf_attrib</text>
+</g>
+<!-- empyrical&#45;&gt;empyrical.perf_attrib -->
+<g id="edge2" class="edge">
+<title>empyrical-&gt;empyrical.perf_attrib</title>
+<path fill="none" stroke="black" d="M244.23,-36.3C238.88,-44.27 232.41,-53.9 226.48,-62.74"/>
+<polygon fill="black" stroke="black" points="221.01,-70.88 222.85,-60.07 223.11,-67.74 226.58,-62.58 226.58,-62.58 226.58,-62.58 223.11,-67.74 230.32,-65.09 221.01,-70.88"/>
+</g>
+<!-- empyrical.periods -->
+<g id="node5" class="node">
+<title>empyrical.periods</title>
+<polygon fill="none" stroke="black" points="362.19,-180 245.5,-180 245.5,-144 362.19,-144 362.19,-180"/>
+<text xml:space="preserve" text-anchor="start" x="253.5" y="-157.8" font-family="Times,serif" font-size="14.00">empyrical.periods</text>
+</g>
+<!-- empyrical&#45;&gt;empyrical.periods -->
+<g id="edge3" class="edge">
+<title>empyrical-&gt;empyrical.periods</title>
+<path fill="none" stroke="black" d="M266.84,-36.06C272.92,-46.16 280.17,-59.41 284.84,-72 292.12,-91.59 296.95,-114.69 299.92,-132.45"/>
+<polygon fill="black" stroke="black" points="301.45,-142.32 295.47,-133.13 300.87,-138.58 299.91,-132.43 299.91,-132.43 299.91,-132.43 300.87,-138.58 304.36,-131.74 301.45,-142.32"/>
+</g>
+<!-- empyrical.stats -->
+<g id="node6" class="node">
+<title>empyrical.stats</title>
+<polygon fill="none" stroke="black" points="432.02,-108 331.66,-108 331.66,-72 432.02,-72 432.02,-108"/>
+<text xml:space="preserve" text-anchor="start" x="339.66" y="-85.8" font-family="Times,serif" font-size="14.00">empyrical.stats</text>
+</g>
+<!-- empyrical&#45;&gt;empyrical.stats -->
+<g id="edge4" class="edge">
+<title>empyrical-&gt;empyrical.stats</title>
+<path fill="none" stroke="black" d="M287.31,-36.48C303.67,-45.57 323.85,-56.78 341.36,-66.51"/>
+<polygon fill="black" stroke="black" points="349.71,-71.15 338.78,-70.22 346.4,-69.31 340.97,-66.29 340.97,-66.29 340.97,-66.29 346.4,-69.31 343.15,-62.36 349.71,-71.15"/>
+</g>
+<!-- empyrical.deprecate -->
+<g id="node3" class="node">
+<title>empyrical.deprecate</title>
+<polygon fill="none" stroke="black" points="439.39,-36 310.3,-36 310.3,0 439.39,0 439.39,-36"/>
+<text xml:space="preserve" text-anchor="start" x="318.3" y="-13.8" font-family="Times,serif" font-size="14.00">empyrical.deprecate</text>
+</g>
+<!-- empyrical.stats&#45;&gt;empyrical.periods -->
+<g id="edge5" class="edge">
+<title>empyrical.stats-&gt;empyrical.periods</title>
+<path fill="none" stroke="black" d="M362.56,-108.3C353.19,-116.72 341.75,-126.98 331.47,-136.21"/>
+<polygon fill="black" stroke="black" points="324.08,-142.84 328.52,-132.81 326.89,-140.31 331.52,-136.16 331.52,-136.16 331.52,-136.16 326.89,-140.31 334.53,-139.51 324.08,-142.84"/>
+</g>
+<!-- empyrical.utils -->
+<g id="node7" class="node">
+<title>empyrical.utils</title>
+<polygon fill="none" stroke="black" points="479.64,-180 380.05,-180 380.05,-144 479.64,-144 479.64,-180"/>
+<text xml:space="preserve" text-anchor="start" x="388.05" y="-157.8" font-family="Times,serif" font-size="14.00">empyrical.utils</text>
+</g>
+<!-- empyrical.stats&#45;&gt;empyrical.utils -->
+<g id="edge6" class="edge">
+<title>empyrical.stats-&gt;empyrical.utils</title>
+<path fill="none" stroke="black" d="M393.71,-108.3C399.17,-116.27 405.78,-125.9 411.83,-134.74"/>
+<polygon fill="black" stroke="black" points="417.43,-142.89 408.06,-137.19 415.29,-139.77 411.77,-134.64 411.77,-134.64 411.77,-134.64 415.29,-139.77 415.48,-132.1 417.43,-142.89"/>
+</g>
+</g>
+</svg>

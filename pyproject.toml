@@ -41,8 +41,8 @@ dependencies = [
     "pandas>=2.2.2; python_version>='3.12'",
     "bottleneck >=1.3.0",
     "pandas >=1.5.0",
-    "scipy >=0.15.1",
-    "peewee<3.17.4" # awwaiting bugfix in latest version: https://github.com/coleifer/peewee/issues/2891
+    "scipy >=0.15.1", # awwaiting bugfix in latest version: https://github.com/coleifer/peewee/issues/2891
+    "peewee<3.17.4",
 ]
 
 [project.urls]
@@ -193,3 +193,9 @@ deps =
 commands =
     pytest --cov={toxinidir}/src --cov-report term  --cov-report=xml --cov-report=html:htmlcov {toxinidir}/tests
 """
+
+[dependency-groups]
+dev = [
+    "pdoc>=15.0.4",
+    "pytz>=2026.3.post1",
+]

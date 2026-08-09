@@ -1,0 +1,17 @@
+digraph "packages" {
+rankdir=BT
+charset="utf-8"
+"empyrical" [color="black", label=<empyrical>, shape="box", style="solid"];
+"empyrical._version" [color="black", label=<empyrical._version>, shape="box", style="solid"];
+"empyrical.deprecate" [color="black", label=<empyrical.deprecate>, shape="box", style="solid"];
+"empyrical.perf_attrib" [color="black", label=<empyrical.perf_attrib>, shape="box", style="solid"];
+"empyrical.periods" [color="black", label=<empyrical.periods>, shape="box", style="solid"];
+"empyrical.stats" [color="black", label=<empyrical.stats>, shape="box", style="solid"];
+"empyrical.utils" [color="black", label=<empyrical.utils>, shape="box", style="solid"];
+"empyrical" -> "empyrical._version" [arrowhead="open", arrowtail="none"];
+"empyrical" -> "empyrical.perf_attrib" [arrowhead="open", arrowtail="none"];
+"empyrical" -> "empyrical.periods" [arrowhead="open", arrowtail="none"];
+"empyrical" -> "empyrical.stats" [arrowhead="open", arrowtail="none"];
+"empyrical.stats" -> "empyrical.periods" [arrowhead="open", arrowtail="none"];
+"empyrical.stats" -> "empyrical.utils" [arrowhead="open", arrowtail="none"];
+}
