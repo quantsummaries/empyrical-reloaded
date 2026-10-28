@@ -4,7 +4,6 @@ from operator import attrgetter
 
 import numpy as np
 import pandas as pd
-from pandas.core.generic import NDFrame
 from scipy import stats
 from functools import wraps
 import pytest
@@ -18,6 +17,7 @@ from empyrical.stats import (
 )
 
 DECIMAL_PLACES = 8
+PANDAS_FRAME_TYPES = (pd.Series, pd.DataFrame)
 
 rand = np.random.RandomState(1337)
 
@@ -2018,12 +2018,12 @@ class ReturnTypeEmpyricalProxy(object):
             arg_copies = [
                 (i, arg.copy())
                 for i, arg in enumerate(args)
-                if isinstance(arg, (NDFrame, np.ndarray))
+                if isinstance(arg, (*PANDAS_FRAME_TYPES, np.ndarray))
             ]
             kwarg_copies = {
                 k: v.copy()
                 for k, v in kwargs.items()
-                if isinstance(v, (NDFrame, np.ndarray))
+                if isinstance(v, (*PANDAS_FRAME_TYPES, np.ndarray))
             }
 
             result = func(*args, **kwargs)
@@ -2051,7 +2051,7 @@ class ReturnTypeEmpyricalProxy(object):
 
 class ConvertPandasEmpyricalProxy(ReturnTypeEmpyricalProxy):
     """
-    A ReturnTypeEmpyricalProxy which also converts pandas NDFrame inputs to
+    A ReturnTypeEmpyricalProxy which also converts pandas objects inputs to
     empyrical functions according to the given conversion method.
 
     Calling an instance with a truthy pandas_only will return a new instance
@@ -2076,10 +2076,11 @@ class ConvertPandasEmpyricalProxy(ReturnTypeEmpyricalProxy):
         @wraps(func)
         def convert_args(*args, **kwargs):
             args = [
-                self._convert(arg) if isinstance(arg, NDFrame) else arg for arg in args
+                self._convert(arg) if isinstance(arg, PANDAS_FRAME_TYPES) else arg
+                for arg in args
             ]
             kwargs = {
-                k: self._convert(v) if isinstance(v, NDFrame) else v
+                k: self._convert(v) if isinstance(v, PANDAS_FRAME_TYPES) else v
                 for k, v in kwargs.items()
             }
             return func(*args, **kwargs)
@@ -2089,7 +2090,7 @@ class ConvertPandasEmpyricalProxy(ReturnTypeEmpyricalProxy):
 
 class PassArraysEmpyricalProxy(ConvertPandasEmpyricalProxy):
     """
-    A ConvertPandasEmpyricalProxy which converts NDFrame inputs to empyrical
+    A ConvertPandasEmpyricalProxy which converts pandas objects inputs to empyrical
     functions to numpy arrays.
 
     Calls the underlying

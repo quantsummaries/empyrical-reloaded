@@ -60,6 +60,7 @@ from [Yahoo! Finance](https://finance.yahoo.com/)
 and [pandas-datareader](https://pandas-datareader.readthedocs.io/en/latest/) to
 access [Fama-French](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html) risk factors and FRED
 treasury yields.
+The test matrix includes dedicated pandas 3.x environments for Python 3.12 and 3.13.
 When running with pandas 3.x, ensure your pandas-datareader installation is also pandas-3-compatible.
 This project requires `pandas-datareader>=0.11.1` for that compatibility.
 
