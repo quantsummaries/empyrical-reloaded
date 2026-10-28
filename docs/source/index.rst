@@ -8,3 +8,7 @@
    stats
    perf_attrib
    utils
+
+   contributing
+   migration
+   migration-reference
