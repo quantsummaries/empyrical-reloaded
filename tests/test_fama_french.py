@@ -66,3 +66,27 @@ def test_fama_french_default_end_remains_usable_by_provider(end_kwargs, monkeypa
     ]
     assert result.columns.tolist() == ["Mkt-RF", "SMB", "HML", "RF", "Mom"]
     assert result.notna().all().all()
+
+
+def test_fama_french_reports_datareader_import_failure(monkeypatch):
+    monkeypatch.setattr(utils, "web", None)
+    monkeypatch.setattr(
+        utils, "_pandas_datareader_import_error", TypeError("provider import failed")
+    )
+    with pytest.raises(
+        ImportError, match="pandas-3-compatible pandas-datareader build"
+    ) as observed:
+        utils.get_fama_french(start="2024-01-02", end="2024-01-05")
+    assert isinstance(observed.value.__cause__, TypeError)
+
+
+def test_treasury_yield_reports_datareader_import_failure(monkeypatch):
+    monkeypatch.setattr(utils, "web", None)
+    monkeypatch.setattr(
+        utils, "_pandas_datareader_import_error", TypeError("provider import failed")
+    )
+    with pytest.raises(
+        ImportError, match="pandas-3-compatible pandas-datareader build"
+    ) as observed:
+        utils.get_treasury_yield(start="2024-01-02", end="2024-01-05", period="3MO")
+    assert isinstance(observed.value.__cause__, TypeError)

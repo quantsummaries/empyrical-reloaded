@@ -60,6 +60,8 @@ from [Yahoo! Finance](https://finance.yahoo.com/)
 and [pandas-datareader](https://pandas-datareader.readthedocs.io/en/latest/) to
 access [Fama-French](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html) risk factors and FRED
 treasury yields.
+When running with pandas 3.x, ensure your pandas-datareader installation is also pandas-3-compatible.
+This project requires `pandas-datareader>=0.11.1` for that compatibility.
 
 To install the optional dependencies, use:
 

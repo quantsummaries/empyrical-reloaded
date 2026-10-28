@@ -26,8 +26,11 @@ from pandas.tseries.offsets import BDay
 
 try:
     from pandas_datareader import data as web
-except ImportError:
+except Exception as exc:
     web = None
+    _pandas_datareader_import_error = exc
+else:
+    _pandas_datareader_import_error = None
 
 try:
     import yfinance as yf
@@ -275,7 +278,10 @@ def get_fama_french(
         Percent change of Fama-French factors
     """
     if web is None:
-        raise ImportError("pandas-datareader is required to fetch Fama-French data")
+        raise ImportError(
+            "Install a pandas-3-compatible pandas-datareader build to fetch "
+            "Fama-French data"
+        ) from _pandas_datareader_import_error
 
     if not isinstance(start, datetime):
         start = pd.Timestamp(start).date()
@@ -425,6 +431,11 @@ def get_treasury_yield(start=None, end=None, period="3MO"):
         start = "1970-01-01"
     if end is None:
         end = _1_bday_ago()
+    if web is None:
+        raise ImportError(
+            "Install a pandas-3-compatible pandas-datareader build to fetch "
+            "FRED treasury yields"
+        ) from _pandas_datareader_import_error
 
     treasury = web.DataReader(f"DGS{period}", data_source="fred", start=start, end=end)
     return treasury.ffill()
