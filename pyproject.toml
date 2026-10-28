@@ -26,7 +26,7 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.16"
 dynamic = ["version"]
 
 
@@ -35,13 +35,11 @@ license-files = ["LICENSE"]
 
 dependencies = [
     # following pandas
-    "numpy>=1.23.5; python_version<'3.12'",
-    "numpy>=1.26.0; python_version>='3.12'",
-    #    "numpy>=2.0; python_version>='3.12'",
-    "pandas >=1.5.0; python_version<'3.12'",
-    "pandas>=2.2.2; python_version>='3.12'",
+    "numpy>=1.23.5,<3; python_version<'3.12'",
+    "numpy>=1.26.0,<3; python_version>='3.12'",
+    "pandas>=1.5.0,<3.0; python_version<'3.12'",
+    "pandas>=2.2.2,<4.0; python_version>='3.12'",
     "bottleneck >=1.3.0",
-    "pandas >=1.5.0",
     "pytz",
     "scipy >=0.15.1",
     "peewee<3.17.4", # awwaiting bugfix in latest version: https://github.com/coleifer/peewee/issues/2891

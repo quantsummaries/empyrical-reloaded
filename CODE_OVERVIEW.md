@@ -1,6 +1,6 @@
 # Empyrical Documentation
 
-> **Version**: written against branch `yzeng` at HEAD `fa0bbd7` (2026-10-09).
+> **Version**: written against branch `yzeng` at HEAD `bc01011` (2026-10-27, Python 3.12 / pandas 3.x compatibility). Prior revision: HEAD `fa0bbd7` (2026-10-09).
 
 ## Table of Contents
 - [Review Addendum](#review-addendum)
@@ -16,7 +16,8 @@
 
 
 ## Review Addendum
-_Originally written at HEAD on 2026-10-09 (branch `yzeng`)._
+_Originally written at HEAD on 2026-10-09 (branch `yzeng`); last re-verified
+at HEAD `bc01011` on 2026-10-27._
 
 ### Scope reviewed
 
@@ -32,9 +33,12 @@ _Originally written at HEAD on 2026-10-09 (branch `yzeng`)._
 
 1. **Medium (optional dep drift)**: `utils.get_fama_french` and
    `utils.get_treasury_yield` rely on `pandas-datareader`, which is
-   incompatible with Python >= 3.12 (noted in README). These paths will
-   silently fail on modern Python unless an alternative data source is
-   wired in.
+   incompatible with Python >= 3.12. **Improved in `bc01011`**: the import
+   failure is now captured (`_pandas_datareader_import_error`) and re-raised
+   as a clear `ImportError("Install a pandas-3-compatible pandas-datareader
+   build ...")`, so these paths fail loudly instead of silently on modern
+   Python. The dependency drift itself is unresolved — an alternative data
+   source still needs to be wired in.
    - Ref: `README.md`, `src/empyrical/utils.py`.
 2. **Low (naming)** : `roll_downsize_risk` is a deprecated alias of
    `roll_downside_risk`; the typo ("downsize") is preserved for backwards
@@ -46,6 +50,41 @@ _Originally written at HEAD on 2026-10-09 (branch `yzeng`)._
    visible as `def roll_*` source, which makes static readers (and IDE
    jump-to-definition) harder to navigate.
    - Ref: `src/empyrical/utils.py`.
+
+### Re-verified 2026-10-27 at HEAD `bc01011` (fa0bbd7..bc01011)
+
+The pandas 3.x / Python 3.12 pass (`47aa89f`, `bc01011`) hardened many
+metrics against degenerate inputs. Key additions to watch:
+
+- `stats.aggregate_returns` — WEEKLY grouping now pairs the **ISO week with
+  the ISO year** (`isocalendar()[0]`) instead of the calendar year, so a
+  week that crosses the year boundary is no longer split.
+- `stats.drawdown_series` — ndarray input now drops the anchor row
+  (`out = out[1:]`), so its shape matches the number of returns (Series /
+  DataFrame inputs already did).
+- New private `stats._zero_dispersion_std` — forces the denominator std to 0
+  when all present values are identical, so `sharpe_ratio` and
+  `excess_sharpe` return NaN (not an arbitrary ~1e15 finite ratio) for
+  constant returns; `excess_sharpe` also leaves an undefined tracking error
+  as NaN instead of converting to 0 (which became infinity).
+- `stats.gpd_es_calculator` — returns `np.inf` when the fitted shape ≥ 1
+  (the fitted GPD tail has no finite mean).
+- `stats.conditional_value_at_risk` / `value_at_risk` — omit NaN before
+  computing the tail; empty or all-NaN input returns NaN.
+- `stats.batting_average` — drops non-finite active / benchmark observations
+  and aligns Series by date; an empty subset returns NaN.
+- `stats.beta_fragility_heuristic_aligned` — returns NaN for < 3 pairs and
+  uses floor division for the mid index; the convex-combination weights were
+  swapped to the correct orientation.
+- `utils.up` / `utils.down` — filter with a new `_paired_mask` so only
+  present return / factor pairs are used.
+- `utils._roll_pandas` — rewritten to build a value list plus an index slice
+  (no dict reconstruction), preserving dtype and the tail index.
+- `utils.get_fama_french` / `get_treasury_yield` / `get_symbol_returns_from_yahoo`
+  — clearer `ImportError`s; `end` optional; `PeriodIndex` → timestamp before
+  tz-localize; Yahoo now uses `auto_adjust=False` and re-raises after
+  warning; `get_returns_cached` uses `pd.to_datetime(..., utc=True)`.
+- `perf_attrib.perf_attrib` — `pd.concat(..., sort=False)` added.
 
 ### API / behavior changes captured
 
@@ -70,6 +109,8 @@ _Originally written at HEAD on 2026-10-09 (branch `yzeng`)._
 - `DEPENDENCIES.md` — layered function call graph (Level 0–4, rolling
   factory table, module tree, key observations).
 - `CODE_LEARN.md` — learning roadmap.
+- Re-verified at HEAD `bc01011` on 2026-10-27 (this addendum): the pandas
+  3.x / Python 3.12 pass `fa0bbd7..bc01011`.
 
 [⬆ 回到目录](#table-of-contents)
 
@@ -84,8 +125,10 @@ function lives in one of five top-level modules.
 
 ## Package dependencies
 - Runtime: `numpy>=1.23.5`, `pandas>=1.3.0`, `scipy>=0.15.1`.
-- Optional: `yfinance` (price data), `pandas-datareader` (Fama-French
-  factors, FRED treasury yields; incompatible with Python >= 3.12).
+- Optional: `yfinance` (price data; `auto_adjust=False` since `bc01011`),
+  `pandas-datareader` (Fama-French factors, FRED treasury yields; requires a
+  pandas-3-compatible build on Python >= 3.12 — the code now raises a clear
+  `ImportError` when it is missing).
 - Downstream: `pyfolio-reloaded` and `alphalens-reloaded`.
 
 [⬆ 回到目录](#table-of-contents)

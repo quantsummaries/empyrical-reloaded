@@ -1,6 +1,6 @@
 # Empyrical Function Dependencies
 
-> **Version**: written against branch `yzeng` at HEAD `fa0bbd7` (2026-10-09).
+> **Version**: written against branch `yzeng` at HEAD `bc01011` (2026-10-27, Python 3.12 / pandas 3.x compatibility). Prior revision: HEAD `fa0bbd7` (2026-10-09).
 
 This document maps the in-package function calls in `src/empyrical`. It is
 intended as a navigation aid for reviewing implementation changes: a change to
@@ -39,12 +39,16 @@ These functions do not call another Empyrical function directly.
    `beta_fragility_heuristic_aligned`, `gpd_es_calculator`,
    `gpd_var_calculator`, `gpd_loglikelihood_scale_and_shape`,
    `gpd_loglikelihood_scale_only`, `value_at_risk`,
-   `conditional_value_at_risk`.
+   `conditional_value_at_risk`, `_zero_dispersion_std` (new in `bc01011`;
+   forces the denominator std to 0 for identical values, so ratios stay
+   NaN instead of becoming arbitrary ~1e15 values).
 2. `empyrical.utils`: `_roll_ndarray`, `_roll_pandas`, `cache_dir`,
    `ensure_directory`, `get_utc_timestamp`, `_1_bday_ago`, `get_fama_french`,
    `get_symbol_returns_from_yahoo`, `rolling_window`,
    `_flatten`, `_to_pandas`, `_adjust_returns`, `nanmean`, `nanstd`, `nansum`,
-   `nanmax`, `nanmin`, `nanargmax`, `nanargmin`, `up`, `down`.
+   `nanmax`, `nanmin`, `nanargmax`, `nanargmin`, `up`, `down`,
+   `_paired_mask` (new in `bc01011`; selects present 1-D return / factor
+   pairs, used by `up` and `down`).
 3. `empyrical.perf_attrib`: `compute_exposures`.
 4. `empyrical.deprecate`: `deprecated` (its returned wrapper calls the
    decorated function dynamically).
@@ -58,7 +62,8 @@ These functions do not call another Empyrical function directly.
 3. `annual_return` → `annualization_factor`, `cum_returns_final`.
 4. `annual_volatility` → `annualization_factor`, utility `nanstd`.
 5. `downside_risk` → `annualization_factor`, utility `nanmean`.
-6. `excess_sharpe` → utility `_adjust_returns`, `nanmean`, `nanstd`.
+6. `excess_sharpe` → utility `_adjust_returns`, `nanmean`, `nanstd`,
+   `_zero_dispersion_std` (new in `bc01011`).
 7. `beta_aligned` → utility `nanmean`.
 8. `beta_fragility_heuristic` → utility `_aligned_series`.
 9. `get_treasury_yield` → `_1_bday_ago` when `end` is omitted.
@@ -74,13 +79,19 @@ These functions do not call another Empyrical function directly.
 15. Utility `_create_unary_vectorized_roll_function` and
     `_create_binary_vectorized_roll_function` → `_flatten`, `rolling_window`.
 16. `perf_attrib` → `compute_exposures`.
+17. `up` → `_paired_mask`; `down` → `_paired_mask` (new in `bc01011`; the
+    mask restricts to present return / factor pairs before the `<0` / `>0`
+    filter).
+18. `downside_risk` → `_adjust_returns` (aligned to the returns index before
+    array conversion, new in `bc01011`), `annualization_factor`, utility
+    `nanmean`.
 
 ### Level 2 — composite statistics
 
 1. `max_drawdown` → `drawdown_series`, utility `nanmin`.
 2. `cagr` → `annual_return`.
 3. `sharpe_ratio` → `annualization_factor`, utility `_adjust_returns`,
-   `nanmean`, `nanstd`.
+   `nanmean`, `nanstd`, `_zero_dispersion_std` (new in `bc01011`).
 4. `sortino_ratio` → `annualization_factor`, utility `_adjust_returns`,
    `nanmean`, `downside_risk`.
 5. `beta` → utility `_aligned_series` for non-NumPy inputs, `beta_aligned`.
@@ -121,8 +132,10 @@ These functions do not call another Empyrical function directly.
 1. `alpha_beta` → utility `_aligned_series`, `alpha_beta_aligned`.
 2. `gpd_risk_estimates_aligned` → `gpd_loglikelihood_minimizer_aligned`,
    `gpd_var_calculator`, `gpd_es_calculator`.
-3. `gpd_risk_estimates` → utility `_aligned_series`,
-   `gpd_risk_estimates_aligned`.
+3. `gpd_risk_estimates` → `gpd_risk_estimates_aligned` (since `bc01011`,
+   `var_p` is treated as a scalar tail probability and passed straight
+   through; the earlier `_aligned_series(returns, var_p)` call was dropped
+   because `var_p` is not a return series).
 4. `up_down_capture` → `up_capture`, `down_capture`.
 
 [⬆ 回到目录](#table-of-contents)
@@ -198,5 +211,14 @@ empyrical.deprecate
 - `perf_attrib` and `deprecate` form separate utility surfaces: attribution
   uses its own exposure aggregation, while the deprecation decorator invokes
   the wrapped function dynamically.
+- Since `bc01011`, several metrics are hardened against degenerate input and
+  now return NaN instead of a spurious or infinite number: `sharpe_ratio` /
+  `excess_sharpe` (constant returns → 0 denominator → NaN),
+  `conditional_value_at_risk` / `value_at_risk` (empty or all-NaN → NaN),
+  `batting_average` (non-finite obs dropped; empty subset → NaN),
+  `beta_fragility_heuristic_aligned` (< 3 pairs → NaN),
+  `gpd_es_calculator` (shape ≥ 1 → `np.inf`). `aggregate_returns` WEEKLY
+  grouping now keys on ISO year + ISO week, and `drawdown_series` ndarray
+  output no longer includes the anchor row.
 
 [⬆ 回到目录](#table-of-contents)

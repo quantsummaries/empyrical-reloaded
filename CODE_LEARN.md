@@ -1,6 +1,6 @@
 # Empyrical Reloaded — Learning Roadmap
 
-> **Version**: written against branch `yzeng` at HEAD `fa0bbd7` (2026-10-09).
+> **Version**: written against branch `yzeng` at HEAD `bc01011` (2026-10-27, Python 3.12 / pandas 3.x compatibility). Prior revision: HEAD `fa0bbd7` (2026-10-09).
 
 Entry-points and recommended reading order for learning this codebase.
 All paths below are relative to the repo root `empyrical-reloaded/`.
@@ -73,21 +73,35 @@ test section in `tests/test_stats.py` side-by-side.
 
 - [ ] **Basic returns**: `simple_returns`, `cum_returns`, `cum_returns_final`,
       `aggregate_returns`, `annual_return`, `cagr`.
+      > Since `bc01011`, `aggregate_returns` WEEKLY grouping keys on
+      > **(ISO year, ISO week)** so a week spanning the calendar-year
+      > boundary is not split; `simple_returns` handles integer-typed ndarray
+      > prices exactly.
 - [ ] **Drawdown**: `drawdown_series`, `max_drawdown`, `roll_max_drawdown`.
+      > Since `bc01011`, the ndarray output of `drawdown_series` drops the
+      > anchor row, so its length matches the number of returns.
 - [ ] **Volatility**: `annual_volatility`, `roll_annual_volatility`,
       `downside_risk`.
 - [ ] **Risk-adjusted return**: `sharpe_ratio`, `sortino_ratio`,
       `calmar_ratio`, `omega_ratio`, `tail_ratio`, `excess_sharpe`,
       `stability_of_timeseries`.
+      > Since `bc01011`, `sharpe_ratio` / `excess_sharpe` return **NaN**
+      > (not an arbitrary ~1e15 value) for constant / zero-dispersion
+      > returns.
 - [ ] **Alpha / beta vs a benchmark**: `alpha_beta`, `alpha`, `beta` and
       their `_aligned` twins; then `roll_alpha_beta`, `roll_alpha`,
       `roll_beta`.
 - [ ] **Capture ratios**: `capture`, `up_capture`, `down_capture`,
       `up_down_capture`, `batting_average`, `up_alpha_beta`,
       `down_alpha_beta`, plus the `roll_*` versions.
+      > Since `bc01011`, `up` / `down` filter to present pairs and
+      > `batting_average` drops non-finite observations (empty subset → NaN).
 - [ ] **Tail risk**: `value_at_risk`, `conditional_value_at_risk`,
       `gpd_risk_estimates` (generalized Pareto — this is the most
       advanced piece; read it last, it's self-contained).
+      > Since `bc01011`, `value_at_risk` / `conditional_value_at_risk`
+      > return NaN for empty / all-NaN input, and `gpd_es_calculator`
+      > returns `np.inf` when the fitted shape ≥ 1.
 
 [⬆ 回到目录](#table-of-contents)
 
